@@ -1,22 +1,15 @@
-# Basic Dockerfile for frontend
-# Note: This is a basic version. Students should optimize it with:
-# - Multi-stage builds (build stage + nginx serve stage)
-# - Smaller base images (alpine)
-# - Security best practices
-# - Static file serving optimization
+FROM node:22-alpine as builder
 
-FROM node:22
-
-WORKDIR /app
-
+WORKDIR /client
 COPY package*.json ./
-
 RUN npm install
-
 COPY . .
+RUN npm run build 
 
-RUN npm run build
 
+FROM nginx:alpine
+
+COPY --from=builder /client/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 4200
 
-CMD ["npm", "run", "preview"]

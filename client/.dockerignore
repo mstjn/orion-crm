@@ -1,0 +1,7 @@
+node_modules
+.gitignore
+.env
+.env.local
+.git
+.github
+.env.example
