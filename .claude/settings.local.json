@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(git ls-remote *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(New-Item *)",
+      "PowerShell(New-Item *)"
     ]
   }
 }
