@@ -12,7 +12,7 @@ RUN npm run build
 
 FROM node:22-alpine
 RUN apk add --no-cache openssl
-WORKDIR /app 
+WORKDIR /app
 
 COPY --from=builder /server/dist /app/dist
 COPY --from=builder /server/package.json /app/package.json
