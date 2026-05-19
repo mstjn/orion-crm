@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 import { contactService } from '../services/contactService';
 import { CreateContactSchema, UpdateContactSchema } from '../models/contactModel';
+import logger from '../logger';
 
 export const contactController = {
   async getAll(_req: Request, res: Response): Promise<void> {
     try {
       const contacts = await contactService.getAllContacts();
       res.json(contacts);
-    } catch (_error) {
+    } catch (error) {
+      logger.error('Failed to fetch contacts', { error: (error as Error).message });
       res.status(500).json({ error: 'Failed to fetch contacts' });
     }
   },
@@ -19,8 +21,10 @@ export const contactController = {
       res.json(contact);
     } catch (error) {
       if (error instanceof Error && error.message === 'Contact not found') {
+        logger.warn('Contact not found', { id: req.params.id });
         res.status(404).json({ error: 'Contact not found' });
       } else {
+        logger.error('Failed to fetch contact', { id: req.params.id, error: (error as Error).message });
         res.status(500).json({ error: 'Failed to fetch contact' });
       }
     }
@@ -30,9 +34,16 @@ export const contactController = {
     try {
       const validatedData = CreateContactSchema.parse(req.body);
       const contact = await contactService.createContact(validatedData);
+      logger.info('Contact created', { id: contact.id });
       res.status(201).json(contact);
-    } catch (_error) {
-      res.status(400).json({ error: 'Invalid input data' });
+    } catch (error) {
+      if ((error as Error).name === 'ZodError') {
+        logger.warn('Invalid contact data', { error: (error as Error).message });
+        res.status(400).json({ error: 'Invalid input data' });
+      } else {
+        logger.error('Failed to create contact', { error: (error as Error).message });
+        res.status(500).json({ error: 'Internal server error' });
+      }
     }
   },
 
@@ -41,12 +52,18 @@ export const contactController = {
       const { id } = req.params;
       const validatedData = UpdateContactSchema.parse(req.body);
       const contact = await contactService.updateContact(id, validatedData);
+      logger.info('Contact updated', { id });
       res.json(contact);
     } catch (error) {
       if (error instanceof Error && error.message === 'Contact not found') {
+        logger.warn('Contact not found', { id: req.params.id });
         res.status(404).json({ error: 'Contact not found' });
-      } else {
+      } else if ((error as Error).name === 'ZodError') {
+        logger.warn('Invalid contact data', { id: req.params.id, error: (error as Error).message });
         res.status(400).json({ error: 'Invalid input data' });
+      } else {
+        logger.error('Failed to update contact', { id: req.params.id, error: (error as Error).message });
+        res.status(500).json({ error: 'Internal server error' });
       }
     }
   },
@@ -55,11 +72,14 @@ export const contactController = {
     try {
       const { id } = req.params;
       await contactService.deleteContact(id);
+      logger.info('Contact deleted', { id });
       res.status(204).send();
     } catch (error) {
       if (error instanceof Error && error.message === 'Contact not found') {
+        logger.warn('Contact not found', { id: req.params.id });
         res.status(404).json({ error: 'Contact not found' });
       } else {
+        logger.error('Failed to delete contact', { id: req.params.id, error: (error as Error).message });
         res.status(500).json({ error: 'Failed to delete contact' });
       }
     }
@@ -69,7 +89,8 @@ export const contactController = {
     try {
       const stats = await contactService.getContactStats();
       res.json(stats);
-    } catch (_error) {
+    } catch (error) {
+      logger.error('Failed to fetch contact stats', { error: (error as Error).message });
       res.status(500).json({ error: 'Failed to fetch stats' });
     }
   },

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { contactService } from '../services/contactService';
 import type { CreateContactInput, UpdateContactInput } from '../types/contact';
+import logger from '../logger';
 
 export const useContacts = () => {
   return useQuery({
@@ -22,8 +23,12 @@ export const useCreateContact = () => {
 
   return useMutation({
     mutationFn: (input: CreateContactInput) => contactService.create(input),
-    onSuccess: () => {
+    onSuccess: (contact) => {
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      logger.info('Contact created', { id: contact.id });
+    },
+    onError: (error: Error) => {
+      logger.error('Failed to create contact', { error: error.message });
     },
   });
 };
@@ -34,8 +39,12 @@ export const useUpdateContact = () => {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateContactInput }) =>
       contactService.update(id, input),
-    onSuccess: () => {
+    onSuccess: (contact) => {
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      logger.info('Contact updated', { id: contact.id });
+    },
+    onError: (error: Error) => {
+      logger.error('Failed to update contact', { error: error.message });
     },
   });
 };
@@ -45,8 +54,12 @@ export const useDeleteContact = () => {
 
   return useMutation({
     mutationFn: (id: string) => contactService.delete(id),
-    onSuccess: () => {
+    onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      logger.info('Contact deleted', { id });
+    },
+    onError: (error: Error) => {
+      logger.error('Failed to delete contact', { error: error.message });
     },
   });
 };

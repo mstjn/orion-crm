@@ -1,0 +1,8 @@
+http.host: "0.0.0.0"
+http.port: 9600
+pipeline.workers: 1
+pipeline.batch.size: 125
+pipeline.batch.delay: 50
+config.test_and_exit: false
+config.reload.automatic: true
+config.reload.interval: 3s

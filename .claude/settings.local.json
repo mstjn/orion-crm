@@ -4,7 +4,26 @@
       "Bash(git ls-remote *)",
       "Bash(npm install *)",
       "Bash(New-Item *)",
-      "PowerShell(New-Item *)"
+      "PowerShell(New-Item *)",
+      "Bash(curl -s http://localhost:8080/api/health)",
+      "Bash(curl -s http://localhost:8080/invalid)",
+      "Bash(curl -s http://localhost:8080/api/organizations)",
+      "Bash(curl -s http://localhost:8080/api/contacts)",
+      "Bash(curl -s \"http://localhost:9200/logs-*/_count\")",
+      "Bash(curl -s \"http://localhost:9200/logs-*/_search?size=3&sort=@timestamp:desc\")",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s \"http://localhost:9200/logs-*/_search?size=3&sort=@timestamp:desc&pretty\")",
+      "Bash(docker exec *)",
+      "Bash(curl -s \"http://localhost:9200/logs-*/_search?pretty&size=3\")",
+      "Bash(npx tsc *)",
+      "Bash(curl -s \"http://localhost:9200/logs-*/_search?q=message:ready&pretty\")",
+      "Bash(powershell *)",
+      "Bash(curl *)",
+      "WebFetch(domain:github.com)",
+      "Bash(Remove-Item -Force \"C:\\\\Users\\\\Mateo\\\\OneDrive\\\\Documents\\\\Master OpenClassrooms\\\\P7 CI-CD\\\\orion-crm\\\\server\\\\logs\\\\app.log\")",
+      "Bash(Remove-Item -Force \"C:\\\\Users\\\\Mateo\\\\OneDrive\\\\Documents\\\\Master OpenClassrooms\\\\P7 CI-CD\\\\orion-crm\\\\server\\\\logs\\\\.gitkeep\")",
+      "Bash(Remove-Item \"C:\\\\Users\\\\Mateo\\\\OneDrive\\\\Documents\\\\Master OpenClassrooms\\\\P7 CI-CD\\\\orion-crm\\\\server\\\\logs\")",
+      "Bash(npm uninstall *)"
     ]
   }
 }
